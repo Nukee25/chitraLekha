@@ -1,3 +1,1 @@
-from django.contrib import admin
-
-# Register your models here.
+# MongoEngine documents are managed directly in MongoDB tooling.

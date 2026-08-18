@@ -1,0 +1,41 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: chitra-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./backend
+    container_name: chitra-backend
+    restart: unless-stopped
+    environment:
+      DJANGO_SECRET_KEY: dev-secret-key
+      DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "*"
+      CORS_ALLOW_ALL_ORIGINS: "1"
+      MONGO_DB_NAME: chitralekha
+      MONGO_URI: mongodb://mongo:27017/chitralekha
+    depends_on:
+      - mongo
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: chitra-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+
+volumes:
+  mongo_data:
